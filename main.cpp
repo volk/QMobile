@@ -2,6 +2,8 @@
 #include <QtGui>
 #include <iostream>
 
+#include <stdlib.h>
+
 #include "mainwindow.hpp"
 #include "xmlstreamreader.hpp"
 #include "vehicle.hpp"
@@ -21,6 +23,8 @@ int main(int argc, char* argv[])
         {
                 std::cerr << "Usage: xmlstreamreader <file_name> [<file_name>]"
                         << std::endl;
+
+					 exit(1);
         }
 
         QList<Vehicle*>* vehicle = new QList<Vehicle*>();
