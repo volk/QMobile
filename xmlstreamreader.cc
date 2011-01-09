@@ -4,7 +4,7 @@
 
 #include "xmlstreamreader.hpp"
 #include "vehicle.hpp"
-#include "refill.hpp"
+#include "refuel.hpp"
 
 XmlStreamReader::XmlStreamReader(QList<Vehicle*>* list) : vehicleList(list) 
 {

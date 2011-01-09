@@ -2,7 +2,7 @@
 #include <iostream>
 #include <assert.h>
 
-#include "refill.hpp"
+#include "refuel.hpp"
 #include "vehicle.hpp"
 
 using std::cout;		using std::endl;
