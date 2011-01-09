@@ -7,6 +7,7 @@
 #include "mainwindow.hpp"
 #include "xmlstreamreader.hpp"
 #include "vehicle.hpp"
+#include "refuel.hpp"
 
 
 int main(int argc, char* argv[])
@@ -21,13 +22,13 @@ int main(int argc, char* argv[])
 
         if(args.count() < 2)
         {
-                std::cerr << "Usage: xmlstreamreader <file_name> [<file_name>]"
+                std::cerr << "Usage: xmlstreamreader <file_name>"
                         << std::endl;
 
 					 exit(1);
         }
 
-        QList<Vehicle*>* vehicle = new QList<Vehicle*>();
+        QList<Vehicle> vehicle;
 
         XmlStreamReader reader(vehicle);
         reader.readFile(args[1]);

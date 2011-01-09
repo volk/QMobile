@@ -8,10 +8,13 @@
 using std::cout;		using std::endl;
 
 Vehicle::Vehicle(){}
-
+int Vehicle::year(){ return _year; }
+QString Vehicle::model(){ return _model; }
+QString Vehicle::make(){ return _make; }
 void Vehicle::setMake(const QString& q){ _make = q; }
 void Vehicle::setModel(const QString& q){ _model = q; }
 void Vehicle::setYear(int q){ _year = q; }
+
 void Vehicle::addRefuel(const Refuel& refuel)
 {
 //	Refuel newRefuel(refuel.date(), refuel.distance(), refuel.price(), refuel.volume());
@@ -39,11 +42,6 @@ void Vehicle::print()
 		cout << "No refuels for this vehicle" << endl;
 	}
 }
-
-		
-int Vehicle::year(){ return _year; }
-QString Vehicle::model(){ return _model; }
-QString Vehicle::make(){ return _make; }
 
  //returns last refuel
 Refuel& Vehicle::lastRefuel()

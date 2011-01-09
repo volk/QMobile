@@ -13,20 +13,9 @@ void Refuel::setDate(const QDate& q)
 	_date.setDate( q.year(), q.month(), q.day() );
 }
 
-void Refuel::setDistance(double q)
-{ 
-	_distance = q; 
-}
-
-void Refuel::setPrice(double q)
-{ 
-	_price = q; 
-}
-
-void Refuel::setVolume(double q)
-{ 
-	_volume = q; 
-}
+void Refuel::setDistance(double q) { _distance = q; }
+void Refuel::setPrice(double q) { _price = q; }
+void Refuel::setVolume(double q) { _volume = q; }
 
 QDate& Refuel::date(){ return _date; }
 double Refuel::distance(){ return _distance; }

@@ -6,16 +6,13 @@
 #include "vehicle.hpp"
 #include "refuel.hpp"
 
-XmlStreamReader::XmlStreamReader(QList<Vehicle*>* list) : vehicleList(list) 
-{
-	if(vehicleList == NULL)
-		vehicleList = new QList<Vehicle*>();
-}
+XmlStreamReader::XmlStreamReader(QList<Vehicle> list) : vehicleList(list)
+{} 
 
 void XmlStreamReader::readModel()
 {
 	QString model = reader.readElementText();
-	vehicleList->last()->setModel( model );
+	vehicleList.last().setModel( model );
 
 	if(reader.isEndElement())
 		reader.readNext();
@@ -25,7 +22,7 @@ void XmlStreamReader::readModel()
 void XmlStreamReader::readYear()
 {
 	int year = reader.readElementText().toInt();
-	vehicleList->last()->setYear( year );
+	vehicleList.last().setYear( year );
 
 	if(reader.isEndElement())
 		reader.readNext();
@@ -35,7 +32,7 @@ void XmlStreamReader::readYear()
 void XmlStreamReader::readDateMonth()
 {
 	QString month = reader.readElementText();
-	QDate& date = vehicleList->last()->lastRefuel().date();
+	QDate& date = vehicleList.last().lastRefuel().date();
 	date.setDate( date.year(), month.toInt(), date.day() );
 
 	if(reader.isEndElement())
@@ -45,7 +42,7 @@ void XmlStreamReader::readDateMonth()
 void XmlStreamReader::readDateYear()
 {
 	QString year = reader.readElementText();
-	QDate& date = vehicleList->last()->lastRefuel().date();
+	QDate& date = vehicleList.last().lastRefuel().date();
 	date.setDate( year.toInt(), date.month(), date.day() );
 
 	if(reader.isEndElement())
@@ -56,7 +53,7 @@ void XmlStreamReader::readDateYear()
 void XmlStreamReader::readDateDay()
 {
 	QString day = reader.readElementText();
-	QDate& date = vehicleList->last()->lastRefuel().date();
+	QDate& date = vehicleList.last().lastRefuel().date();
 	date.setDate( date.year(), date.month(), day.toInt() );
 
 	if(reader.isEndElement())
@@ -66,7 +63,7 @@ void XmlStreamReader::readDateDay()
 void XmlStreamReader::readDate()
 {
 	QDate refuelDate;
-	vehicleList->last()->lastRefuel().setDate(refuelDate);
+	vehicleList.last().lastRefuel().setDate(refuelDate);
 
 	reader.readNext();
 	while(!reader.atEnd())
@@ -108,7 +105,7 @@ void XmlStreamReader::readDate()
 void XmlStreamReader::readDistance()
 {
 	QString distance = reader.readElementText();
-	vehicleList->last()->lastRefuel().setDistance(distance.toDouble());
+	vehicleList.last().lastRefuel().setDistance(distance.toDouble());
 	
 	if(reader.isEndElement())
 		reader.readNext();
@@ -117,7 +114,7 @@ void XmlStreamReader::readDistance()
 void XmlStreamReader::readPrice()
 {
 	QString distance = reader.readElementText();
-	vehicleList->last()->lastRefuel().setPrice(distance.toDouble());
+	vehicleList.last().lastRefuel().setPrice(distance.toDouble());
 	
 	if(reader.isEndElement())
 		reader.readNext();
@@ -127,7 +124,7 @@ void XmlStreamReader::readPrice()
 void XmlStreamReader::readVolume()
 {
 	QString distance = reader.readElementText();
-	vehicleList->last()->lastRefuel().setVolume(distance.toDouble());
+	vehicleList.last().lastRefuel().setVolume(distance.toDouble());
 	
 	if(reader.isEndElement())
 		reader.readNext();
@@ -137,7 +134,7 @@ void XmlStreamReader::readVolume()
 void XmlStreamReader::readRefuel()
 {
 	Refuel newRefuel;
-	vehicleList->last()->addRefuel(newRefuel);
+	vehicleList.last().addRefuel(newRefuel);
 	reader.readNext();
 
 	while(!reader.atEnd())
@@ -182,7 +179,7 @@ void XmlStreamReader::readRefuel()
 void XmlStreamReader::readMake()
 {
 	QString make = reader.readElementText();
-	vehicleList->last()->setMake( make );
+	vehicleList.last().setMake( make );
 
 	if(reader.isEndElement())
 		reader.readNext();
@@ -192,8 +189,8 @@ void XmlStreamReader::readMake()
 
 void XmlStreamReader::readVehicle()
 {
-	Vehicle* veh = new Vehicle;
-	vehicleList->push_back(veh);
+	Vehicle newVehicle;
+	vehicleList.push_back(newVehicle);
 
 	reader.readNext();
 	while(!reader.atEnd())
@@ -347,11 +344,11 @@ void XmlStreamReader::skipUnknownElement()
 
 void XmlStreamReader::printVehicleList()
 {
-	if(!vehicleList->empty())
+	if(!vehicleList.empty())
 	{
-		for(QList<Vehicle*>::iterator i = vehicleList->begin(); i != vehicleList->end() ; ++i)
+		for(QList<Vehicle>::iterator i = vehicleList.begin(); i != vehicleList.end() ; ++i)
 		{
-			(*i)->print();
+			(*i).print();
 		}
 	}
 }
