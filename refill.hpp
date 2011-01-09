@@ -5,22 +5,25 @@ class QString;
 template <class T>
 class QList;
 
-class Refill
+class Refuel
 {
 	public:
-		Refill();
+		Refuel();
+		Refuel(QDate date, double distance, double price, double volume);
 		void setDate(const QDate& q);
-		void setMiles(double q);
+		void setDistance(double q);
 		void setPrice(double q);
 		void setVolume(double q);
-		QDate date();
-		double miles();
+		QDate& date();
+		double distance();
 		double price();
 		double volume();
+		//debugging purposes
+		void print();
 
 	private:
 		QDate _date;
-		double _miles;
+		double _distance;
 		double _price;
 		double _volume;
 

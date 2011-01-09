@@ -1,14 +1,44 @@
 #include <QtCore>
+#include <iostream>
 
 #include "refill.hpp"
 
-Refill::Refill(){}
-void Refill::setDate(const QDate& q){ _date = q; }
-void Refill::setMiles(double q){ _miles = q; }
-void Refill::setPrice(double q){ _price = q; }
-void Refill::setVolume(double q){ _volume = q; }
+using std::cout;		using std::endl;
 
-QDate Refill::date(){ return _date; }
-double Refill::miles(){ return _miles; }
-double Refill::price(){ return _price; }
-double Refill::volume(){ return _volume; }
+Refuel::Refuel() : _date(), _distance(1), _price(1), _volume(1) { }
+Refuel::Refuel(QDate date, double distance, double price, double volume) : _date(date), _distance(distance), _price(price), _volume(volume){}
+
+void Refuel::setDate(const QDate& q)
+{ 	
+	_date.setDate( q.year(), q.month(), q.day() );
+}
+
+void Refuel::setDistance(double q)
+{ 
+	_distance = q; 
+}
+
+void Refuel::setPrice(double q)
+{ 
+	_price = q; 
+}
+
+void Refuel::setVolume(double q)
+{ 
+	_volume = q; 
+}
+
+QDate& Refuel::date(){ return _date; }
+double Refuel::distance(){ return _distance; }
+double Refuel::price(){ return _price; }
+double Refuel::volume(){ return _volume; }
+
+void Refuel::print()
+{
+	//throw exception
+	if(_date.isValid())
+	{
+		cout << _date.month() << "/" << _date.day() << "/" << _date.year() 
+			<< " : " << _distance << " mi \t$" << _price << "\t" << _volume << " gallons" << endl;
+	}
+}

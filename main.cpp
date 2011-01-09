@@ -27,6 +27,7 @@ int main(int argc, char* argv[])
 
         XmlStreamReader reader(vehicle);
         reader.readFile(args[1]);
+		  reader.printVehicleList();
         std::cout << "finished" << std::endl;
 	return app.exec();
 }

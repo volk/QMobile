@@ -7,13 +7,18 @@ template <class T>
 class QList;
 class Vehicle;
 class QXmlStreamReader;
+class Refuel;
+class QDate;
 
 //standard recursive descent parser
+//all the read functions refer to the vehicleList->last() to input all
+//the necessary attributes
 class XmlStreamReader 
 {
 	public:
 		bool readFile(const QString& fileName);
 		XmlStreamReader(QList<Vehicle*>* list);
+		void printVehicleList(); //debugging purposes
 
 	private:
 		void readAutomobileDBElement();
@@ -21,11 +26,14 @@ class XmlStreamReader
 		void readMake();
 		void readModel();
 		void readYear();
-		void readRefill(); // stub
-		void readDate(); // stub
-		void readMiles();
-		void readPrice(); // stub
-		void readVolume(); //stub
+		void readRefuel(); 
+		void readDate(); 
+		void readDateMonth(); 
+		void readDateDay(); 
+		void readDateYear(); 
+		void readDistance();
+		void readPrice(); 
+		void readVolume(); 
 		void skipUnknownElement();
 
 		QList<Vehicle*>* vehicleList;

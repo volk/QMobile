@@ -4,6 +4,7 @@
 
 #include "xmlstreamreader.hpp"
 #include "vehicle.hpp"
+#include "refill.hpp"
 
 XmlStreamReader::XmlStreamReader(QList<Vehicle*>* list) : vehicleList(list) 
 {
@@ -16,8 +17,6 @@ void XmlStreamReader::readModel()
 	QString model = reader.readElementText();
 	vehicleList->last()->setModel( model );
 
-	std::cout << model.toStdString() << std::endl;
-	
 	if(reader.isEndElement())
 		reader.readNext();
 
@@ -28,34 +27,117 @@ void XmlStreamReader::readYear()
 	int year = reader.readElementText().toInt();
 	vehicleList->last()->setYear( year );
 
-	std::cout <<year << std::endl;
+	if(reader.isEndElement())
+		reader.readNext();
+
+}
+
+void XmlStreamReader::readDateMonth()
+{
+	QString month = reader.readElementText();
+	QDate& date = vehicleList->last()->lastRefuel().date();
+	date.setDate( date.year(), month.toInt(), date.day() );
+
+	if(reader.isEndElement())
+		reader.readNext();
+}
+
+void XmlStreamReader::readDateYear()
+{
+	QString year = reader.readElementText();
+	QDate& date = vehicleList->last()->lastRefuel().date();
+	date.setDate( year.toInt(), date.month(), date.day() );
 
 	if(reader.isEndElement())
 		reader.readNext();
 
 }
 
-void XmlStreamReader::readPrice()
+void XmlStreamReader::readDateDay()
 {
-	QString q = reader.readElementText();
+	QString day = reader.readElementText();
+	QDate& date = vehicleList->last()->lastRefuel().date();
+	date.setDate( date.year(), date.month(), day.toInt() );
 
 	if(reader.isEndElement())
 		reader.readNext();
-
 }
 
 void XmlStreamReader::readDate()
 {
-	QString q = reader.readElementText();
+	QDate refuelDate;
+	vehicleList->last()->lastRefuel().setDate(refuelDate);
 
+	reader.readNext();
+	while(!reader.atEnd())
+	{
+
+		if(reader.isEndElement())
+		{
+			reader.readNext();
+			break;
+		}
+
+		if(reader.isStartElement())
+		{
+			if(reader.name() == "month")
+			{
+				readDateMonth();
+			}
+			else if(reader.name() == "day")
+			{
+				readDateDay();
+			}
+			else if(reader.name() == "year")
+			{
+				readDateYear();
+			}
+			else
+			{
+				skipUnknownElement();
+			}
+		}
+		else
+		{
+			reader.readNext();
+		}
+	}
+
+}
+
+void XmlStreamReader::readDistance()
+{
+	QString distance = reader.readElementText();
+	vehicleList->last()->lastRefuel().setDistance(distance.toDouble());
+	
+	if(reader.isEndElement())
+		reader.readNext();
+}
+
+void XmlStreamReader::readPrice()
+{
+	QString distance = reader.readElementText();
+	vehicleList->last()->lastRefuel().setPrice(distance.toDouble());
+	
 	if(reader.isEndElement())
 		reader.readNext();
 
 }
 
-void XmlStreamReader::readRefill()
+void XmlStreamReader::readVolume()
 {
+	QString distance = reader.readElementText();
+	vehicleList->last()->lastRefuel().setVolume(distance.toDouble());
 	
+	if(reader.isEndElement())
+		reader.readNext();
+
+}
+
+void XmlStreamReader::readRefuel()
+{
+	Refuel newRefuel;
+	vehicleList->last()->addRefuel(newRefuel);
 	reader.readNext();
 
 	while(!reader.atEnd())
@@ -72,9 +154,9 @@ void XmlStreamReader::readRefill()
 			{
 				readDate();
 			}
-			else if(reader.name() == "miles")
+			else if(reader.name() == "distance")
 			{
-				readMiles();
+				readDistance();
 			}
 			else if(reader.name() == "price")
 			{
@@ -96,34 +178,11 @@ void XmlStreamReader::readRefill()
 	}
 }
 
-void XmlStreamReader::readMiles()
-{
-	QString miles = reader.readElementText();
-//	vehicleList->last()->setMiles( miles );
-	std::cout << miles.toStdString() << std::endl;
-	
-	if(reader.isEndElement())
-		reader.readNext();
-
-}
-
-void XmlStreamReader::readVolume()
-{
-	QString volume = reader.readElementText();
-//	vehicleList->last()->setMiles( miles );
-	std::cout << volume.toStdString() << std::endl;
-	
-	if(reader.isEndElement())
-		reader.readNext();
-
-}
 
 void XmlStreamReader::readMake()
 {
 	QString make = reader.readElementText();
 	vehicleList->last()->setMake( make );
-
-	std::cout << make.toStdString() << std::endl;
 
 	if(reader.isEndElement())
 		reader.readNext();
@@ -160,9 +219,9 @@ void XmlStreamReader::readVehicle()
 			{
 				readYear();
 			}
-			else if(reader.name() == "refill")
+			else if(reader.name() == "refuel")
 			{
-				readRefill();
+				readRefuel();
 			}
 			else
 			{
@@ -282,6 +341,17 @@ void XmlStreamReader::skipUnknownElement()
 		else
 		{
 			reader.readNext();
+		}
+	}
+}
+
+void XmlStreamReader::printVehicleList()
+{
+	if(!vehicleList->empty())
+	{
+		for(QList<Vehicle*>::iterator i = vehicleList->begin(); i != vehicleList->end() ; ++i)
+		{
+			(*i)->print();
 		}
 	}
 }
