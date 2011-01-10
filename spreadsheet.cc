@@ -8,7 +8,8 @@
 #include "vehicle.hpp"
 #include "refuel.hpp"
 
-Spreadsheet::Spreadsheet(int r, int c, QWidget* parent, Vehicle* vehicle) :  QTableWidget(r,c,parent), _vehicle(vehicle)
+Spreadsheet::Spreadsheet(int r, int c, QWidget* parent, Vehicle* vehicle) 
+:  QTableWidget(r,c,parent), _vehicle(vehicle)
 {
 	if(_vehicle == NULL)
 		_vehicle = new Vehicle();
@@ -18,6 +19,8 @@ Spreadsheet::Spreadsheet(int r, int c, QWidget* parent, Vehicle* vehicle) :  QTa
 	setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Price($ USD)")));
 	setHorizontalHeaderItem(2, new QTableWidgetItem(tr("Distance(mi.)")));
 	setHorizontalHeaderItem(3, new QTableWidgetItem(tr("Volume(gal.)")));
+	setHorizontalHeaderItem(4, new QTableWidgetItem(tr("mi./$")));
+	setHorizontalHeaderItem(5, new QTableWidgetItem(tr("mi./gal.")));
 
 	populate();
 }
@@ -43,9 +46,6 @@ void Spreadsheet::populate()
 							+ QString::number(i->date().year());
 
 						setItem(r, c, new QTableWidgetItem(dateString));
-
-						std::cout << "(" << r << "," << c << ")"
-							<< " = " << dateString.toStdString() << std::endl;
 					}
 					break;
 				case 1:
@@ -66,16 +66,30 @@ void Spreadsheet::populate()
 						setItem(r, c, new QTableWidgetItem(volume));
 					}
 					break;
+				case 4:
+					{
+						//distance per price
+						QString disPerPric = QString::number(i->distance() / 
+								i->price());
+						setItem(r, c, new QTableWidgetItem(disPerPric));
+					}
+					break;
+				case 5:
+					{
+						//distance per gallon
+						QString disPerVol = QString::number(i->distance() / 
+								i->volume());
+						setItem(r, c, new QTableWidgetItem(disPerVol));
+					}
+					break;
 				default:
-					std::cout << "not supposed to reach here" << std::endl;
-					assert(true);
+					std::cout << "error handling needed" << std::endl;
 					assert(false);
 			}
 
 		}
 
 		r++;
-//		setItem(c/rows, c%rows, new QTableWidgetItem(tr())); 
 	}
 }
 

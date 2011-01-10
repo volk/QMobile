@@ -39,8 +39,6 @@ class MainWindow : public QMainWindow
 	private:
 		void createActions();
 		void createMenus();
-//			void readSettings(); //uselsess
-//			void createTabs(); //useless
 		void loadFile(const QString&);
 		bool okToContinue();	//returns true if 
 		bool isWindowModified();
@@ -49,7 +47,6 @@ class MainWindow : public QMainWindow
 
 		//all the widgets will be attached to this widget
 		QWidget* centralWidget;
-//		Spreadsheet* sp;
 		QList<Spreadsheet*> spreadsheets;
 		QTabWidget* centralTabs;
 

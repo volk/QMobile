@@ -167,7 +167,7 @@ void MainWindow::loadFile(const QString& fileName)
 	for(i = vehicles->begin(); i != vehicles->end(); i++)
 	{
 		//populate tab names
-		spreadsheets.push_back(new Spreadsheet(200, 4, centralTabs, *i));
+		spreadsheets.push_back(new Spreadsheet(200, 6, centralTabs, *i));
 		centralTabs->addTab(spreadsheets.last(), (*i)->make());
 
 //		QList<Refuel>& refuels = (*i)->refuels();
