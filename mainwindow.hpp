@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_HPP
 #define MAINWINDOW_HPP
 
-#include <QMainWindow>
+#include <QtGui>
 
 class QAction;
 class QActionGroup;
@@ -10,7 +10,9 @@ class QMenu;
 class QTableWidget;
 class Spreadsheet;
 template <class T>
-class QQueue;
+class QList;
+class Vehicle;
+class Refuel;
 
 class MainWindow : public QMainWindow
 {
@@ -20,33 +22,54 @@ class MainWindow : public QMainWindow
 		MainWindow();
 
 	protected:
-//		void contextMenuEvent(QContextMenuEvent *event);
+		//		void contextMenuEvent(QContextMenuEvent *event);
+		void closeEvent(QCloseEvent* event);
+
+	signals:
+		void modified();
 
 	private slots:
-//		void newFile();
-//		void openFile();
-//		void about();
-//		bool saveFile();
-//		bool saveAsFile();
+		void newFile();
+		void openFile();
+		bool saveFile();
+		bool saveAsFile();
+		void about();
+		void aboutQt();
 
 	private:
-//		void createActions();
-//		void createMenus();
-//		bool okToContinue();
-//		bool isWindowModified();
+		void createActions();
+		void createMenus();
+//			void readSettings(); //uselsess
+//			void createTabs(); //useless
+		void loadFile(const QString&);
+		bool okToContinue();	//returns true if 
+		bool isWindowModified();
+		void setCurrentFile(const QString&);
+		static QString strippedFileName(const QString& fullFileName);
 
-		Spreadsheet* sp;
-		QQueue<Spreadsheet*> spreadsheetList();
+		//all the widgets will be attached to this widget
+		QWidget* centralWidget;
+//		Spreadsheet* sp;
+		QList<Spreadsheet*> spreadsheets;
 		QTabWidget* centralTabs;
 
 		QMenu *fileMenu;
-		QMenu *helpMenu;
 		QAction* newAction;
 		QAction* openAction;
 		QAction* saveAction;
 		QAction* saveAsAction;
 		QAction* exitAction;
+
+		QMenu *helpMenu;
 		QAction* aboutAction;
+		QAction* aboutQtAction;
+
+		QString currentFile;
+		QString appName;
+
+		//central layout boxes
+		//everything should be attached to them
+		QHBoxLayout* mainLayout;
 
 };
 

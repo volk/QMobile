@@ -17,7 +17,7 @@ class XmlStreamReader
 {
 	public:
 		bool readFile(const QString& fileName);
-		XmlStreamReader(QList<Vehicle> list);
+		XmlStreamReader(QList<Vehicle*>* list);
 		void printVehicleList(); //debugging purposes
 
 	private:
@@ -35,8 +35,9 @@ class XmlStreamReader
 		void readPrice(); 
 		void readVolume(); 
 		void skipUnknownElement();
+		
 
-		QList<Vehicle> vehicleList;
+		QList<Vehicle*>* vehicleList;
 		QXmlStreamReader reader;
 
 };

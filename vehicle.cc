@@ -55,3 +55,8 @@ Refuel& Vehicle::lastRefuel()
 
 	return _refuels.back();
 }
+
+QList<Refuel>& Vehicle::refuels()
+{
+	return _refuels;
+}

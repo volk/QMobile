@@ -15,6 +15,7 @@ class Vehicle
 		void setYear(int q);
 		void addRefuel(const Refuel&);
 		Refuel& lastRefuel(); //returns last refuel
+		QList<Refuel>& refuels(); //returns reference to refuel list
 		int year();
 		QString model();
 		QString make();
