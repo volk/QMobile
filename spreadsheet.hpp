@@ -11,6 +11,7 @@ class Spreadsheet : public QTableWidget
 
 	public:
 		Spreadsheet(int rows, int columns, QWidget *parent = 0, Vehicle* = NULL);
+		Vehicle* vehicle();
 
 	private:
 		Vehicle* _vehicle;

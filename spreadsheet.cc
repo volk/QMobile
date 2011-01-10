@@ -93,3 +93,7 @@ void Spreadsheet::populate()
 	}
 }
 
+Vehicle* Spreadsheet::vehicle()
+{
+	return _vehicle;
+}

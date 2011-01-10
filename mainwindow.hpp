@@ -35,12 +35,14 @@ class MainWindow : public QMainWindow
 		bool saveAsFile();
 		void about();
 		void aboutQt();
+		void updateMobileBox();
 
 	private:
 		void createActions();
 		void createMenus();
+		void createLayout();
 		void loadFile(const QString&);
-		bool okToContinue();	//returns true if 
+		bool okToContinue();
 		bool isWindowModified();
 		void setCurrentFile(const QString&);
 		static QString strippedFileName(const QString& fullFileName);
@@ -64,10 +66,11 @@ class MainWindow : public QMainWindow
 		QString currentFile;
 		QString appName;
 
-		//central layout boxes
-		//everything should be attached to them
-		QHBoxLayout* mainLayout;
-
+		//right-hand side layout; used to display and change Vehicle
+		//information like year, model, make
+		QLineEdit* makeLineEdit;
+		QLineEdit* modelLineEdit;
+		QLineEdit* yearLineEdit;
 };
 
 #endif

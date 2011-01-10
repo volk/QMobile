@@ -13,29 +13,11 @@ MainWindow::MainWindow()
 	centralWidget = new QWidget;
 	setCentralWidget(centralWidget);
 
+	createLayout();
 	createActions();
 	createMenus();
-
-	//main layout for centralWidget
-	mainLayout = new QHBoxLayout;
-	mainLayout->setMargin(3);
-	centralWidget->setLayout(mainLayout);
-
-	//left central widget
-	centralTabs = new QTabWidget;
-	mainLayout->addWidget(centralTabs);
-
-	//right central widget
-	QGroupBox* automobileBox = new QGroupBox(tr("Vehicle Information"));
-	QRadioButton* radio1 = new QRadioButton(tr("&Radio button 1"));
-
-	QVBoxLayout* autoVBox = new QVBoxLayout;
-	autoVBox->addWidget(radio1);
-	autoVBox->addStretch();
-	automobileBox->setLayout(autoVBox);
-
-	mainLayout->addWidget(automobileBox);
 	
+
 	//added all widgets past this point, now initialize them
 
 	//create an initial spreasheet
@@ -49,6 +31,43 @@ MainWindow::MainWindow()
 	currentFile = "Untitled";
 	appName = "QMobile";
 	setCurrentFile(currentFile);
+}
+
+void MainWindow::createLayout()
+{
+	//main layout for centralWidget
+	QHBoxLayout* mainLayout = new QHBoxLayout;
+	mainLayout->setMargin(3);
+	centralWidget->setLayout(mainLayout);
+
+	//left central widget
+	centralTabs = new QTabWidget;
+	mainLayout->addWidget(centralTabs);
+
+	//right central widget
+	QGroupBox* automobileBox = new QGroupBox(tr("Automobile Information"));
+	QGridLayout* rightGrid = new QGridLayout;
+
+	QLabel* makeLabel = new QLabel(tr("Make"));
+	QLabel* modelLabel = new QLabel(tr("Model"));
+	QLabel* yearLabel = new QLabel(tr("Year"));
+	makeLineEdit = new QLineEdit();
+	modelLineEdit = new QLineEdit();
+	yearLineEdit = new QLineEdit();
+
+	rightGrid->addWidget(makeLabel, 0, 0);
+	rightGrid->addWidget(modelLabel, 1, 0);
+	rightGrid->addWidget(yearLabel, 2, 0);
+	rightGrid->addWidget(makeLineEdit, 0, 1);
+	rightGrid->addWidget(modelLineEdit, 1, 1);
+	rightGrid->addWidget(yearLineEdit, 2, 1);
+
+	QVBoxLayout* mobileVBox = new QVBoxLayout;
+	mobileVBox->addLayout(rightGrid);
+	mobileVBox->addStretch();
+
+	automobileBox->setLayout(mobileVBox);
+	mainLayout->addWidget(automobileBox);
 }
 
 void MainWindow::setCurrentFile(const QString& fileName)
@@ -102,6 +121,30 @@ void MainWindow::createActions()
 	aboutQtAction = new QAction(tr("About &Qt"), this);
 	aboutQtAction->setStatusTip(tr("About Qt framework"));
 	connect(aboutQtAction, SIGNAL(triggered()), this, SLOT(aboutQt()));
+
+	connect(centralTabs, SIGNAL(currentChanged(int)), this, 
+			SLOT(updateMobileBox()));
+}
+
+void MainWindow::updateMobileBox()
+{
+	if(centralTabs->currentIndex() == -1)
+	{
+		return;
+	}
+	else
+	{
+		Vehicle* vehicle = spreadsheets.at(centralTabs->currentIndex())->vehicle();
+
+		QString makeString = vehicle->make();
+		makeLineEdit->setText(makeString);
+
+		QString modelString = vehicle->model();
+		modelLineEdit->setText(modelString);
+
+		int year	= vehicle->year();
+		yearLineEdit->setText( QString::number(year) );
+	}
 
 }
 
@@ -168,16 +211,7 @@ void MainWindow::loadFile(const QString& fileName)
 	{
 		//populate tab names
 		spreadsheets.push_back(new Spreadsheet(200, 6, centralTabs, *i));
-		centralTabs->addTab(spreadsheets.last(), (*i)->make());
-
-//		QList<Refuel>& refuels = (*i)->refuels();
-//		//populate spreadsheet cells with refuels
-//		QList<Refuel>::iterator i;
-//		for(i = refuels.begin(); i != refuels.end(); i++)
-//		{
-//			spreadsheets.last()->addRowEntry(i);
-//		}
-
+		centralTabs->addTab(spreadsheets.last(), (*i)->model());
 	}
 	
 }
@@ -190,9 +224,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
 		event->accept();
 	}
 	else
-	{
 		event->ignore();
-	}
 }
 
 bool MainWindow::saveFile()
