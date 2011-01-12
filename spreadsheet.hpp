@@ -12,15 +12,20 @@ class Spreadsheet : public QTableWidget
 	public:
 		Spreadsheet(int rows, int columns, QWidget *parent = 0, Vehicle* = NULL);
 		Vehicle* vehicle();
+		void clear();
 
 	private:
 		Vehicle* _vehicle;
-
-
-/*-----------------------------------------------------------------------------
- *  populates the spreadsheet by reading the Vehicle object
- *-----------------------------------------------------------------------------*/
+		void recalculate();
 		void populate();
+
+		bool autoRecalc;
+
+	signals:
+		void modified();
+
+	private slots:
+		void spreadsheetModified();
 };
 
 #endif

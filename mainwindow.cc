@@ -17,20 +17,12 @@ MainWindow::MainWindow()
 	createActions();
 	createMenus();
 	
-
-	//added all widgets past this point, now initialize them
-
-	//create an initial spreasheet
-//	spreadsheets.push_back( new Spreadsheet(200, 5, centralTabs) );
-//	centralTabs->addTab(spreadsheets.last(), tr("First Tab"));
-
-	QString message = tr("Begin by opening a previous file or "
-			"inputting new data");
+	QString message = tr("Begin by opening a previous file or inputting"
+			" new data");
 	statusBar()->showMessage(message);
 
-	currentFile = "Untitled";
 	appName = "QMobile";
-	setCurrentFile(currentFile);
+	setCurrentFile("");
 }
 
 void MainWindow::createLayout()
@@ -124,13 +116,18 @@ void MainWindow::createActions()
 
 	connect(centralTabs, SIGNAL(currentChanged(int)), this, 
 			SLOT(updateMobileBox()));
+	
+	connect(newAction, SIGNAL(triggered()), this, SLOT(updateMobileBox()));
+	connect(openAction, SIGNAL(triggered()), this, SLOT(updateMobileBox()));
 }
 
 void MainWindow::updateMobileBox()
 {
-	if(centralTabs->currentIndex() == -1)
+	if(centralTabs->currentIndex() == -1 || !centralTabs->count())
 	{
-		return;
+		makeLineEdit->setText("");
+		modelLineEdit->setText("");
+		yearLineEdit->setText("");
 	}
 	else
 	{
@@ -178,8 +175,16 @@ void MainWindow::newFile()
 {
 	if(okToContinue())
 	{
-		//clear spreadsheet list
-		setCurrentFile(QString("Untitled"));
+		QList<Spreadsheet*>::iterator i;
+		for(i = spreadsheets.begin(); i != spreadsheets.end(); ++i)
+			delete *i;
+
+		spreadsheets.clear();
+
+		//Qt automatically takes care of pointers for us 
+		centralTabs = new QTabWidget;
+
+		setCurrentFile(QString(""));
 	}
 }
 
@@ -205,6 +210,8 @@ void MainWindow::loadFile(const QString& fileName)
 	XmlStreamReader reader(vehicles);
 	reader.readFile(fileName);
 
+	setCurrentFile(fileName);
+
 	//populate tab titles 
 	QList<Vehicle*>::iterator i;
 	for(i = vehicles->begin(); i != vehicles->end(); i++)
@@ -212,8 +219,16 @@ void MainWindow::loadFile(const QString& fileName)
 		//populate tab names
 		spreadsheets.push_back(new Spreadsheet(200, 6, centralTabs, *i));
 		centralTabs->addTab(spreadsheets.last(), (*i)->model());
+		connect(spreadsheets.last(), SIGNAL(modified()), this, 
+				SLOT(documentModified()));
 	}
 	
+}
+
+void MainWindow::documentModified()
+{
+	setWindowModified(true);
+	std::cout << std::string("BINGO") << isWindowModified() <<  std::endl;
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)
@@ -250,11 +265,6 @@ void MainWindow::about()
 ////				"menu-bar menus and context menus."));
 }
 
-bool MainWindow::isWindowModified()
-{
-	return true;
-}
-
 /*-----------------------------------------------------------------------------
  *  returns true if all the file processing(saving, unsaving, etc) is done
  *  returns false if it is not safe to proceed
@@ -267,7 +277,7 @@ bool MainWindow::okToContinue()
 {
 	if(isWindowModified())
 	{
-		int r = QMessageBox::warning(this, tr("Spreadsheet"),
+		int r = QMessageBox::warning(this, tr("Spreadsheets"),
 				tr("This document has been modified.\n"
 					"Do you want to save your changes?"),
 				QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);

@@ -25,9 +25,6 @@ class MainWindow : public QMainWindow
 		//		void contextMenuEvent(QContextMenuEvent *event);
 		void closeEvent(QCloseEvent* event);
 
-	signals:
-		void modified();
-
 	private slots:
 		void newFile();
 		void openFile();
@@ -36,6 +33,7 @@ class MainWindow : public QMainWindow
 		void about();
 		void aboutQt();
 		void updateMobileBox();
+		void documentModified();
 
 	private:
 		void createActions();
@@ -43,7 +41,6 @@ class MainWindow : public QMainWindow
 		void createLayout();
 		void loadFile(const QString&);
 		bool okToContinue();
-		bool isWindowModified();
 		void setCurrentFile(const QString&);
 		static QString strippedFileName(const QString& fullFileName);
 

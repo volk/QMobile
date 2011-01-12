@@ -23,6 +23,60 @@ Spreadsheet::Spreadsheet(int r, int c, QWidget* parent, Vehicle* vehicle)
 	setHorizontalHeaderItem(5, new QTableWidgetItem(tr("mi./gal.")));
 
 	populate();
+	recalculate();
+
+	autoRecalc = true;
+}
+
+void Spreadsheet::clear()
+{
+
+}
+
+void Spreadsheet::recalculate()
+{
+	QList<Refuel>& refuels = _vehicle->refuels();
+
+	QList<Refuel>::iterator i;
+	int r = 0;	//row number in spreadsheet
+	for(i = refuels.begin(); i != refuels.end(); ++i)
+	{
+		//c is the column number in the spreadsheet
+		for(int c = 0; c < columnCount(); c++)
+		{
+			switch(c % columnCount())
+			{
+				case 4:
+					{
+						//distance per price
+						QString disPerPric = QString::number(i->distance() / 
+								i->price());
+						setItem(r, c, new QTableWidgetItem(disPerPric));
+					}
+					break;
+				case 5:
+					{
+						//distance per gallon
+						QString disPerVol = QString::number(i->distance() / 
+								i->volume());
+						setItem(r, c, new QTableWidgetItem(disPerVol));
+					}
+					break;
+			}
+
+		}
+
+		r++;
+	}
+
+}
+
+void Spreadsheet::spreadsheetModified()
+{
+	if(autoRecalc)
+		recalculate();
+
+	emit modified();
 }
 
 void Spreadsheet::populate()
@@ -66,31 +120,13 @@ void Spreadsheet::populate()
 						setItem(r, c, new QTableWidgetItem(volume));
 					}
 					break;
-				case 4:
-					{
-						//distance per price
-						QString disPerPric = QString::number(i->distance() / 
-								i->price());
-						setItem(r, c, new QTableWidgetItem(disPerPric));
-					}
-					break;
-				case 5:
-					{
-						//distance per gallon
-						QString disPerVol = QString::number(i->distance() / 
-								i->volume());
-						setItem(r, c, new QTableWidgetItem(disPerVol));
-					}
-					break;
-				default:
-					std::cout << "error handling needed" << std::endl;
-					assert(false);
 			}
 
 		}
 
 		r++;
 	}
+
 }
 
 Vehicle* Spreadsheet::vehicle()
